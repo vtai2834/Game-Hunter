@@ -1,0 +1,29 @@
+các nguyên tắc logic chính xác để tạo CNF:
+T(i, j) là biến logic biểu thị liệu ô (i, j) chứa một bẫy.
+T(i, j) là số -> xung quanh nó có bẫy.
+
+n(i, j) là số trên ô (i, j) chỉ ra số lượng bẫy xung quanh nó.
+
+Các ràng buộc:
+- Nếu n(i, j) bằng 0, thì không được có bẫy xung quanh ô (i, j): ¬T(i, j) ??? Làm lz j suy ra được cái này ????
+
+
+- Nếu n(i, j) lớn hơn 0, thì phải có đúng n(i, j) bẫy xung quanh ô (i,j): T(i-1, j-1) v T(i-1, j) v T(i-1, j+1) v T(i, j-1) v T(i, j+1) v T(i+1, j-1) v T(i+1, j) v T(i+1, j+1)
+-> Chọn toàn bộ tổ hợp chập n của các ô "_" xung quanh đều có giá trị là True. Tổ hợp các ô đó là Trap
+-> Trường hợp này không dễ để tính. Vì p1 v p2 v p3 v p4 -> đúng khi chỉ 1 trong số p đúng. Ví dụ ô (i, j) có n = 2 -> các tổ hợp T(i-1, j) và T(i+1, j) = 1 vớii T(i-1, j) = 0 & t(i+1, j) = 1  --> Dùng mde phủ
+
+- Nếu n(i, j) bằng số ô kề với (i,j), thì tất cả các ô kề phải là bẫy: T(i-1, j-1) ^ T(i-1, j) ^ T(i-1, j+1) ^ T(i, j-1) ^ T(i, j+1) ^ T(i+1, j-1) ^ T(i+1, j) ^ T(i+1, j+1)
+
+- Nhưng nếu chúng ta chỉ xét tổ hợp có kích thước = n -> không thể đảm bảo rằng có ĐÚNG n bẫy trong số ô "_"
+- Để tạo CNF cho trường hợp này, chúng ta xét tất cả các tổ hợp có kích thước (n + 1) Mỗi tổ hợp (combinations) sẽ được tạo ra từ tập con của n phần tử neighbors và được biểu diễn bằng mệnh đề phủ định. Vì ta muốn đảm bảo rằng có nhiều nhất n bẫy xung quanh ô (i,j) <-> có ít nhất n+1 ô hàng xóm không có Trap. Vì thế ta dùng mde phủ định cho trường hợp này.
+
+- Tương tự như thế. Trong m neighbor của ô (i,j). Ta xác định đc n ô là sẽ có trap, vậy m - n ô còn lại sẽ không có Trap. -> 
+- Lệnh if thứ 2 trong tạo cnf, ta không xài phủ định để đảm bảo trong mỗi tổ hợp đc tạo ra có ít nhất len(neighbors) - num_traps +1 hàng xóm có bẫy
+
+- sử dụng mệnh đề phủ định và num_traps + 1 trong các lệnh if là để đảm bảo rằng có đủ bẫy được đặt trong lưới, như yêu cầu của bài toán.
+
+- Hai lệnh if này nằm cùng mức ưu tiên trong code vì chúng bổ sung lẫn nhau trong việc tạo mệnh đề CNF cho việc đặt số bẫy.
+
+- Lệnh if đầu tiên xử lý trường hợp có nhiều hơn num_traps bẫy trong số hàng xóm. Nó tạo ra các mệnh đề phủ định (-var_map[x, y]) để đảm bảo rằng ít nhất num_traps bẫy sẽ được đặt.
+
+- Lệnh if thứ hai xử lý trường hợp có ít hơn num_traps bẫy trong số hàng xóm. Nó tạo ra các mệnh đề không phủ định (var_map[x, y]) để đảm bảo rằng ít nhất len(neighbors) - num_traps + 1 hàng xóm sẽ không có bẫy.
