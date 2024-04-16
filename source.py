@@ -15,9 +15,6 @@ def readInput(filepath):
         matrix.append(row)
     
     return matrix
-grid = readInput("input.txt")
-print(grid)
-
 
 def generate_cnf(grid):
     """ Generate CNF from the grid provided """
@@ -72,32 +69,8 @@ def solve_cnf(grid, cnf, var_map, n, m):
 
     return solution
 
-def brute_force(grid):
-    """ Implement a brute-force solution """
-    # This is a placeholder for the actual brute-force algorithm
-    return grid
-
-def backtracking(grid):
-    """ Implement a backtracking solution """
-    # This is a placeholder for the actual backtracking algorithm
-    return grid
-
 def run_tests(grid):
-    """ Run tests on various grid sizes """
-    test_cases = [
-        (grid, 4),
-        # Add more test cases with varying sizes
-    ]
-    results = {}
-    for grid, n in test_cases:
-        print(n)
-        cnf, var_map, n, m = generate_cnf(grid)
-        sat_solution = solve_cnf(grid, cnf, var_map, n, m)
-        results[(tuple(map(tuple, grid)), n)] = sat_solution
-    return results
 
-if __name__ == "__main__":
-    test_results = run_tests(grid)
-    for test_case, result in test_results.items():
-        print("Test Case:", test_case)
-        print("SAT Solver Solution:", result)
+    cnf, var_map, n, m = generate_cnf(grid)
+    sat_solution = solve_cnf(grid, cnf, var_map, n, m)
+    return sat_solution
