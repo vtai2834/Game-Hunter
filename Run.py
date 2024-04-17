@@ -14,6 +14,7 @@ def readInput(filepath):
     
     return matrix
 
+##############################################################################################
 # Brute-Force
 def countTrapsAround(board, x, y):
     count = 0
@@ -74,6 +75,7 @@ def solveBruteFore(grid):
     resetFgrid(grid)
     return grid
       
+#########################################################################################
 # Backtracking
 def get_neighbors(grid, row, col): # Get neighbor cells
     neighbors = []
@@ -86,68 +88,73 @@ def get_neighbors(grid, row, col): # Get neighbor cells
 
     return neighbors
 
-def is_valid(grid, solveBoard): # Check if the solveBoard sastisfies the requirrment
-    rows, cols = len(grid), len(grid[0])
+# Check if the solveBoard sastisfies the requirment
+def is_valid(grid):
+    numericCell = 0 # Count the number of cells that contain numerical value
 
-    for row in range(rows):
-        for col in range(cols):
-            if grid[row][col].isnumeric():  # If current cell is a number
-                trap_count = 0        
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            if str(grid[row][col]).isnumeric():  # If current cell is a number
+                numericCell += 1          
+                trap_count = 0    
+
                 for neighbor_row, neighbor_col in get_neighbors(grid, row, col):
-                    if isinstance(solveBoard[neighbor_row][neighbor_col], bool) and solveBoard[neighbor_row][neighbor_col] == True:  # If neighbor cell is True (Trap)
+                    if str(grid[neighbor_row][neighbor_col]) == 'T':  # If neighbor cell is True (Trap)
                         trap_count += 1 # Increase Trap count
+
                 if trap_count != int(grid[row][col]):   # If trap count does not equal the current cell's value
                     return False
-                
+
+    if numericCell == 0: # Return False if theres no numerical data
+        return False
+       
     return True
 
-def backtrack(grid, solveBoard, row=0, col=0): # Use recursion for backtracking
+# Use recursion for backtracking
+def backtrack(grid, row=0, col=0):
     rows, cols = len(grid), len(grid[0])
 
     if row == rows - 1 and col == cols: # If current cell is the final cell
-        return is_valid(grid, solveBoard)   # Check if the solveBoard sasstisfies the requirement
+        return is_valid(grid)   # Check if the solveBoard sasstisfies the requirement
 
     if col == cols: # If the current cell is the last cell of the row
-        return backtrack(grid, solveBoard, row + 1, 0)  # Continue recursion with the next row
+        return backtrack(grid, row + 1, 0)  # Continue recursion with the next row
 
     # Try assigning True (trap) and False (gem) to the current cell
-    if isinstance(solveBoard[row][col], bool) or solveBoard[row][col] == '_':   # If the current cell has Boolean value of '_'
-        solveBoard[row][col] = True # Set the current cell to True
+    if not str(grid[row][col]).isnumeric():   # If the current cell has Boolean value of '_'
+        grid[row][col] = 'T' # Set the current cell to True
 
-    if backtrack(grid, solveBoard, row, col + 1):   # Continue recursion with the next cell
+    if backtrack(grid, row, col + 1):   # Continue recursion with the next cell
         return True
     
-    if isinstance(solveBoard[row][col], bool) or solveBoard[row][col] == '_': # Vice versa
-        solveBoard[row][col] = False
+    if not str(grid[row][col]).isnumeric(): # Vice versa
+        grid[row][col] = 'G'
 
-    if backtrack(grid, solveBoard, row, col + 1): 
+    if backtrack(grid, row, col + 1): 
         return True
 
     return False
 
-def solveBackTrack(grid): # Solve the fird
-    rows, cols = len(grid), len(grid[0])
+# Solve the fird
+def solveBackTrack(grid):
+    solve_grid = copy.deepcopy(grid)
 
-    cnt = 0
-    for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] != '_':
-                cnt += 1
-    if cnt == 0:
-        return grid
-    
-    solveBoard = copy.deepcopy(grid)
-
-    if backtrack(grid, solveBoard): # If the grid is solvable
-        for row in range(rows):
-            for col in range(cols):
-                if grid[row][col] == "_":   # Set 'T' and 'G' to corresponding cells
-                    grid[row][col] = "T" if solveBoard[row][col] == True else "G"
-        return grid
-    
+    if backtrack(solve_grid): # If the grid is solvable
+        return solve_grid   # Return solved grid
     else: 
-        return None
+        return grid # Return original grid
+
   
+def outputGrid(grid):
+    for row in grid:
+        line = ''
+        for j in range(len(row)):
+            line += str(row[j])
+            if j != len(row) - 1: line += ', '
+
+        print(line)
+
+    print('\n')
 # Ex grid
 # grid2 = [
 #     ['_', '_', '_', '_'],
@@ -156,32 +163,32 @@ def solveBackTrack(grid): # Solve the fird
 # ]
 
 if __name__ == "__main__":
-    choice = 0
-    print("\n\n MENU")
-    print("1. SAT algorithm")
-    print("2. BruteFore algorithm")
-    print("3. Backtrack algorithm")
-    print("0. Stop")
-    choice = int(input("input algorithm: "))
-    if choice > 3:
-        print("hehe")
-        solved_grid = None
+    choice = -1
+    while choice != 0:
+        print("\n\n MENU")
+        print("1. SAT algorithm")
+        print("2. BruteFore algorithm")
+        print("3. Backtrack algorithm")
+        print("0. Stop")
+        choice = int(input("input algorithm: "))
+        if choice > 3 or choice == 0:
+            print("hehe")
+            solved_grid = None
 
-    grid = readInput("input.txt")
-    print('Problem:')
-    for i in grid:
-        print(i)
+        grid = readInput("9x9.txt")
+        print('Problem:')
+        outputGrid(grid)
 
-    if choice == 2:
-        solved_grid = solveBruteFore(grid)
-    elif choice == 3:
-        solved_grid = solveBackTrack(grid)
-    elif choice == 1:
-        solved_grid = run_tests(grid)
+        if choice == 2:
+            solved_grid = solveBruteFore(grid)
+        elif choice == 3:
+            solved_grid = solveBackTrack(grid)
+        elif choice == 1:
+            solved_grid = run_tests(grid)
 
-    if solved_grid:
-        print('\nSolved:')
-        for row in solved_grid:
-            print(row)
-    else:
-        print('\nNo solution')
+        if solved_grid:
+            print('\nSolved:')
+            for row in solved_grid:
+                print(row)
+        else:
+            print('\nNo solution')

@@ -32,7 +32,6 @@ def generate_cnf(grid):
                     for y in range(max(0, j-1), min(m, j+2))
                     if (x, y) != (i, j) and grid[x][y] == '_'
                 ]
-                print(neighbors)
                 # Gán biến cho các hàng xóm
                 for x, y in neighbors:
                     if (x, y) not in var_map:
@@ -42,19 +41,14 @@ def generate_cnf(grid):
                 if neighbors:
                     # Các mệnh đề cho trường hợp có nhiều hơn num_traps bẫy
                     if len(neighbors) >= num_traps:
-                        print("neighbors1:", neighbors)
-                        print("num_traps1:", num_traps)
                         for comb in itertools.combinations(neighbors, num_traps+1):
-                            print("comb1:", comb)
                             cnf.append([-var_map[x, y] for x, y in comb])
-                            # print (cnf)
+
                     # Các mệnh đề cho trường hợp có ít hơn num_traps bẫy
                     if len(neighbors) >= (len(neighbors) - num_traps+1):
-                        print("neighbors2:", neighbors)
-                        print("num_traps2:", num_traps)
                         for comb in itertools.combinations(neighbors, len(neighbors) - num_traps+1):
                             cnf.append([var_map[x, y] for x, y in comb])
-                            print("comb2:", comb)
+
     return cnf, var_map, n, m
 
 def solve_cnf(grid, cnf, var_map, n, m):
