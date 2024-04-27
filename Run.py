@@ -43,7 +43,7 @@ def main():
             print("hehe")
             return
 
-        grid = readInput("5x5.txt")
+        grid = readInput("20x20.txt")
         print('Problem:')
         outputGrid(grid)
         name_algorithm = ''

@@ -60,7 +60,6 @@ def solve_cnf(grid, cnf, var_map, n, m):
     solution = [['_' for _ in range(m)] for _ in range(n)]
     if is_solvable:
         model = solver.get_model()
-        print (model)
         for (i, j), var in var_map.items():
             solution[i][j] = 'T' if model[var - 1] > 0 else 'G'
     solver.delete()
