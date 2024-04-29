@@ -21,7 +21,7 @@ def isValid(board):
                     return False
     return True
 
-def processBruteFore(grid):
+def processBruteForce(grid):
     rows = len(grid)
     cols = len(grid[0])
     indices = [(i, j) for i in range(rows) for j in range(cols) if grid[i][j] == '_']
@@ -40,22 +40,23 @@ def processBruteFore(grid):
             grid[index[0]][index[1]] = value
         
         if isValid(grid):
-            return  # Tìm thấy giải pháp hợp lệ đầu tiên thì thoát
+            return True # Tìm thấy giải pháp hợp lệ đầu tiên thì thoát
         
         else:
             # Đặt lại các ô để kiểm tra sự kết hợp tiếp theo
             for index, value in zip(remaining_indices, combo):
                 grid[index[0]][index[1]] = '_'
-    
-    print("No valid solutions found.")
-    
+    return False
+
 def resetFgrid(grid): # Chuyển F lại thành '_'
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             if grid[i][j] == 'F':
                 grid[i][j] = '_'
         
-def solveBruteFore(grid):
-    processBruteFore(grid)
+def solveBruteForce(grid):
+    valid = processBruteForce(grid)
     resetFgrid(grid)
-    return grid
+    if valid: 
+        return grid
+    return None

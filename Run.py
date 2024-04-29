@@ -40,7 +40,6 @@ def main():
         print("0. Stop")
         choice = int(input("input algorithm: "))
         if choice > 4 or choice == 0:
-            print("hehe")
             return
 
         grid = readInput("20x20.txt")
@@ -50,7 +49,7 @@ def main():
         if choice == 2:
             name_algorithm = 'BruteForce'
             start = time.time()
-            solved_grid = solveBruteFore(grid)
+            solved_grid = solveBruteForce(grid)
             end = time.time()
         elif choice == 3:
             name_algorithm = 'Backtrack'
@@ -75,6 +74,8 @@ def main():
             print("Elapsed time: {:.2f} milliseconds".format(elapsedTime))
         else:
             print('\nNo solution')
+            elapsedTime = (end - start) * 1000
+            print("Elapsed time: {:.2f} milliseconds".format(elapsedTime))
 
 
 main()

@@ -67,4 +67,4 @@ def solveBackTrack(grid):
     if backtrack(solve_grid): # If the grid is solvable
         return solve_grid   # Return solved grid
     else: 
-        return grid # Return original grid
+        return None # Return original grid

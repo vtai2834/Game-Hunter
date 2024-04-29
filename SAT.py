@@ -62,6 +62,7 @@ def solve_cnf(grid, cnf, var_map, n, m):
         model = solver.get_model()
         for (i, j), var in var_map.items():
             solution[i][j] = 'T' if model[var - 1] > 0 else 'G'
+    else: return None
     solver.delete()
     
     #thêm các số trong grid ban đầu vào solution:
